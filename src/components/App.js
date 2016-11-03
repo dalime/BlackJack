@@ -42,8 +42,8 @@ class App extends Component {
     this.state = {
       turn: false,
       cards: numbers,
-      humanCards: humanCards,
-      dealerCards: dealerCards
+      humanCards,
+      dealerCards
     };
 
     this.changeTurn = this.changeTurn.bind(this);
@@ -60,7 +60,12 @@ class App extends Component {
   }
 
   hit() {
-    this.setState({humanCards: this.state.humanCards + 1});
+    let { humanCards, cards, dealerCards } = this.state;
+    humanCards.push(cards.splice(Math.floor(Math.random() * cards.length), 1));
+    this.setState({
+      humanCards,
+      cards
+    });
   }
 
   stay() {
@@ -72,7 +77,9 @@ class App extends Component {
     if (this.state.dealerCards.length) {
       dealerCards = this.state.dealerCards.map((card, index) => {
         return (
-          <h2 key={index}>{card.toString()}</h2>
+          <div className="col-sm-1 col-md-1 col-lg-1" key={index}>
+            <h2>{card.toString()}</h2>
+          </div>
         )
       });
     }
@@ -80,7 +87,9 @@ class App extends Component {
     if (this.state.humanCards.length) {
       humanCards = this.state.humanCards.map((card, index) => {
         return (
-          <h2 key={index}>{card.toString()}</h2>
+          <div className="col-sm-1 col-md-1 col-lg-1" key={index}>
+            <h2>{card.toString()}</h2>
+          </div>
         )
       });
     }
@@ -104,14 +113,18 @@ class App extends Component {
         </div>
         <hr/>
         <div className="row">
-          <h3>Player</h3>
+          <div className="col-sm-4 col-md-4 col-lg-4">
+            <h3>Player</h3>
+          </div>
+          <div className="col-sm-4 col-md-4 col-lg-4">
+            <button className="btn btn-success" onClick={this.hit} disabled={this.state.turn}>Hit</button>
+          </div>
+          <div className="col-sm-4 col-md-4 col-lg-4">
+            <button className="btn btn-alert" onClick={this.stay} disabled={this.state.turn}>Stay</button>
+          </div>
         </div>
         <div className="row">
           {humanCards}
-        </div>
-        <div className="row">
-          <button className="btn btn-sm" onClick={this.hit} disabled={this.state.turn}>Hit</button>
-          <button className="btn btn-sm" onClick={this.stay} disabled={this.state.turn}>Stay</button>
         </div>
       </div>
     )
