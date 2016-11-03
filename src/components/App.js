@@ -1,16 +1,7 @@
-// There will only be 2 players - the "human" player and the dealer
-// The players are each dealt 2 cards to start the hand
-// The player can choose to hit one or more times, or stand with any amount
-// The dealer must hit if his cards total less than 17 and stand otherwise
 // If the player's or dealer's cards total over 21, they bust and their turn is over
 // If either player has 21 with their first two cards, they win (unless they both have 21 on their first two cards, in which case it is a tie)
 // If both players bust, the dealer wins
 // If both players have the same score, they tie
-// The player always takes their turn before the dealer
-// All cards count as their face value, except A which can be 1 or 11 and J, Q, K all count as 10
-// The deck should be shuffled before each game
-// You do not need to implement advanced blackjack rules (split, double or insurance)
-// Only one deck will be used per game
 
 import React, { Component } from 'react';
 
@@ -27,7 +18,7 @@ class App extends Component {
     super(props);
 
     let numbers = [];
-    for (let i = 0; i < 53; i++) {
+    for (let i = 0; i < 52; i++) {
       numbers.push(i);
     }
 
@@ -40,36 +31,101 @@ class App extends Component {
     dealerCards.push(numbers.splice(Math.floor(Math.random() * numbers.length), 1)[0]);
 
     this.state = {
-      turn: false,
       cards: numbers,
       humanCards,
-      dealerCards
+      dealerCards,
+      humanScore: 0,
+      dealerScore: 0
     };
 
-    this.changeTurn = this.changeTurn.bind(this);
     this.hit = this.hit.bind(this);
     this.stay = this.stay.bind(this);
+    this.calculateScore = this.calculateScore.bind(this);
   }
 
-  changeTurn() {
-    if (this.state.turn) {
-      this.setState({turn: false});
-    } else {
-      this.setState({turn: true});
-    }
+  componentDidMount() {
+    this.setState({
+      humanScore: this.calculateScore(this.state.humanCards),
+      dealerScore: this.calculateScore(this.state.dealerCards)
+    });
   }
 
   hit() {
-    let { humanCards, cards, dealerCards } = this.state;
-    humanCards.push(cards.splice(Math.floor(Math.random() * cards.length), 1));
+    // The player always takes their turn before the dealer
+    let { humanCards, cards, dealerCards, dealerScore } = this.state;
+    humanCards.push(cards.splice(Math.floor(Math.random() * cards.length), 1)[0]);
+
+    // The dealer must hit if his cards total less than 17 and stand otherwise
+    if (dealerScore < 17) {
+      dealerCards.push(cards.splice(Math.floor(Math.random() * cards.length), 1)[0]);
+    }
+
     this.setState({
       humanCards,
+      dealerCards,
       cards
+    });
+    this.setState({
+      humanScore: this.calculateScore(humanCards),
+      dealerScore: this.calculateScore(dealerCards)
     });
   }
 
   stay() {
-    this.setState({turn: true});
+    // The player always takes their turn before the dealer
+    let { humanCards, dealerCards, cards, dealerScore } = this.state;
+
+    // The dealer must hit if his cards total less than 17 and stand otherwise
+    if (dealerScore < 17) {
+      dealerCards.push(cards.splice(Math.floor(Math.random() * cards.length), 1)[0]);
+    }
+
+    this.setState({
+      dealerCards,
+      cards
+    });
+    this.setState({
+      humanScore: this.calculateScore(humanCards),
+      dealerScore: this.calculateScore(dealerCards)
+    });
+  }
+
+  calculateScore(array) {
+    let score = 0;
+    array.forEach(item => {
+      if (item > 35) {
+        // All cards count as their face value, except A which can be 1 or 11 and J, Q, K all count as 10
+        score += 10;
+      }
+      else if (item > 31) {
+        score += 9;
+      }
+      else if (item > 27) {
+        score += 8;
+      }
+      else if (item > 23) {
+        score += 7;
+      }
+      else if (item > 19) {
+        score += 6;
+      }
+      else if (item > 15) {
+        score += 5;
+      }
+      else if (item > 11) {
+        score += 4;
+      }
+      else if (item > 7) {
+        score += 3;
+      }
+      else if (item > 3) {
+        score += 2;
+      }
+      else {
+        score += 1;
+      }
+    });
+    return score;
   }
 
   render() {
@@ -106,7 +162,9 @@ class App extends Component {
         </div>
         <hr/>
         <div className="row">
-          <h3>Dealer</h3>
+          <div className="col-sm-12 col-md-12 col-lg-12">
+            <h3>Dealer</h3>
+          </div>
         </div>
         <div className="row">
           {dealerCards}
@@ -117,10 +175,10 @@ class App extends Component {
             <h3>Player</h3>
           </div>
           <div className="col-sm-4 col-md-4 col-lg-4">
-            <button className="btn btn-success" onClick={this.hit} disabled={this.state.turn}>Hit</button>
+            <button className="btn btn-success" onClick={this.hit}>Hit</button>
           </div>
           <div className="col-sm-4 col-md-4 col-lg-4">
-            <button className="btn btn-alert" onClick={this.stay} disabled={this.state.turn}>Stay</button>
+            <button className="btn btn-alert" onClick={this.stay}>Stay</button>
           </div>
         </div>
         <div className="row">
