@@ -70,27 +70,29 @@ class App extends Component {
   render() {
     let dealerCards;
     if (this.state.dealerCards.length) {
-      dealerCards = this.state.dealerCards.map(card => {
-        console.log(card);
-        <h2>{card.toString()}</h2>
+      dealerCards = this.state.dealerCards.map((card, index) => {
+        return (
+          <h2 key={index}>{card.toString()}</h2>
+        )
       });
     }
     let humanCards;
     if (this.state.humanCards.length) {
-      humanCards = this.state.humanCards.map(card => {
-        console.log(card);
-        <h2>{card.toString()}</h2>
-      })
+      humanCards = this.state.humanCards.map((card, index) => {
+        return (
+          <h2 key={index}>{card.toString()}</h2>
+        )
+      });
     }
 
     return (
       <div className="container">
         <div className="row">
           <div className="col-sm-8 col-md-10 col-lg-11">
-            <h1>Blackjack Game</h1>
+            <h1 className="col-sm-8 col-md-10 col-lg-11">Blackjack Game</h1>
           </div>
           <div className="col-sm-4 col-md-2 col-lg-1">
-            <img src="#" style={styles.card}/>
+            <img className="col-sm-4 col-md-2 col-lg-1" src="#" style={styles.card}/>
           </div>
         </div>
         <hr/>
