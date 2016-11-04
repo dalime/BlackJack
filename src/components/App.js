@@ -1,8 +1,3 @@
-// If the player's or dealer's cards total over 21, they bust and their turn is over
-// If either player has 21 with their first two cards, they win (unless they both have 21 on their first two cards, in which case it is a tie)
-// If both players bust, the dealer wins
-// If both players have the same score, they tie
-
 import React, { Component } from 'react';
 
 const styles = {
@@ -35,12 +30,14 @@ class App extends Component {
       humanCards,
       dealerCards,
       humanScore: 0,
-      dealerScore: 0
+      dealerScore: 0,
+      status: ''
     };
 
     this.hit = this.hit.bind(this);
     this.stay = this.stay.bind(this);
     this.calculateScore = this.calculateScore.bind(this);
+    this.reDeal = this.reDeal.bind(this);
   }
 
   componentDidMount() {
@@ -128,7 +125,33 @@ class App extends Component {
     return score;
   }
 
+  reDeal() {
+    let numbers = [];
+    for (let i = 0; i < 52; i++) {
+      numbers.push(i);
+    }
+
+    let humanCards = [];
+    humanCards.push(numbers.splice(Math.floor(Math.random() * numbers.length), 1)[0]);
+    humanCards.push(numbers.splice(Math.floor(Math.random() * numbers.length), 1)[0]);
+
+    let dealerCards = [];
+    dealerCards.push(numbers.splice(Math.floor(Math.random() * numbers.length), 1)[0]);
+    dealerCards.push(numbers.splice(Math.floor(Math.random() * numbers.length), 1)[0]);
+
+    this.setState({
+      cards: numbers,
+      humanCards,
+      dealerCards,
+      humanScore: this.calculateScore(humanCards),
+      dealerScore: this.calculateScore(dealerCards),
+      status: ''
+    });
+  }
+
   render() {
+    let { humanScore, dealerScore, status } = this.state;
+
     let dealerCards;
     if (this.state.dealerCards.length) {
       dealerCards = this.state.dealerCards.map((card, index) => {
@@ -150,11 +173,37 @@ class App extends Component {
       });
     }
 
+    let end;
+    // If either player has 21 with their first two cards, they win (unless they both have 21 on their first two cards, in which case it is a tie)
+    if (humanScore > 21 && dealerScore > 21) {
+      // If both players bust, the dealer wins
+      status = 'Dealer Wins!';
+      end = true;
+    } else if (dealerScore > 21 && humanScore <= 21) {
+      // If the player's or dealer's cards total over 21, they bust and their turn is over
+      status = 'Player Wins!';
+      end = true;
+    } else if (humanScore > 21 && dealerScore <= 21) {
+      // If the player's or dealer's cards total over 21, they bust and their turn is over
+      status = 'Dealer Wins!';
+      end = true;
+    } else if (humanScore === dealerScore) {
+      // If both players have the same score, they tie
+      status = 'Tie!';
+      end = true;
+    } else {
+      end = false;
+    }
+
     return (
       <div className="container">
         <div className="row">
-          <div className="col-sm-8 col-md-10 col-lg-11">
+          <div className="col-sm-4 col-md-8 col-lg-10">
             <h1 className="col-sm-8 col-md-10 col-lg-11">Blackjack Game</h1>
+          </div>
+          <div className="col-sm-4 col-md-2 col-lg-1">
+            <h5 className="col-sm-8 col-md-10 col-lg-11">{status}</h5>
+            <button className="btn btn-primary" disabled={!end} onClick={this.reDeal}>ReDeal</button>
           </div>
           <div className="col-sm-4 col-md-2 col-lg-1">
             <img className="col-sm-4 col-md-2 col-lg-1" src="#" style={styles.card}/>
@@ -175,10 +224,10 @@ class App extends Component {
             <h3>Player</h3>
           </div>
           <div className="col-sm-4 col-md-4 col-lg-4">
-            <button className="btn btn-success" onClick={this.hit}>Hit</button>
+            <button className="btn btn-success" onClick={this.hit} disabled={end}>Hit</button>
           </div>
           <div className="col-sm-4 col-md-4 col-lg-4">
-            <button className="btn btn-alert" onClick={this.stay}>Stay</button>
+            <button className="btn btn-alert" onClick={this.stay} disabled={end}>Stay</button>
           </div>
         </div>
         <div className="row">

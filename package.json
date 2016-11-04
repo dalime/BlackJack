@@ -7,7 +7,7 @@
     "start": "npm run startinstall && node app.js",
     "clean": "rimraf .tmp/",
     "dev": "concurrently -k \"nodemon ./bin/www\" \"npm run watch\"",
-    "watch": "watchify client/index.js -o static/bundle.js -t [ babelify --presets [ es2015 react ] ]",
+    "watch": "watchify src/main.js -o static/bundle.js -t [ babelify --presets [ es2015 react ] ]",
     "startinstall": "browserify -e src/main.js -o static/bundle.js -t [ babelify --presets [ es2015 react ] ]"
   },
   "keywords": [],
