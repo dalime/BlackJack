@@ -1,22 +1,17 @@
 import React, { Component } from 'react';
 
-const styles = {
-  card: {
-    border: '1px solid black',
-    width: '200px',
-    height: '200px'
-  }
-}
-
 class App extends Component {
   constructor(props) {
     super(props);
 
     let numbers = [];
+
+    // Only one deck will be used per game
     for (let i = 0; i < 52; i++) {
       numbers.push(i);
     }
 
+    // The players are each dealt 2 cards to start the hand
     let humanCards = [];
     humanCards.push(numbers.splice(Math.floor(Math.random() * numbers.length), 1)[0]);
     humanCards.push(numbers.splice(Math.floor(Math.random() * numbers.length), 1)[0]);
@@ -25,6 +20,7 @@ class App extends Component {
     dealerCards.push(numbers.splice(Math.floor(Math.random() * numbers.length), 1)[0]);
     dealerCards.push(numbers.splice(Math.floor(Math.random() * numbers.length), 1)[0]);
 
+    // There will be only 2 players – a “human” player and a dealer
     this.state = {
       cards: numbers,
       humanCards,
@@ -34,8 +30,10 @@ class App extends Component {
       end: false
     };
 
+    // The player can choose to hit one or more times, or stand with any amount
     this.hit = this.hit.bind(this);
     this.stay = this.stay.bind(this);
+
     this.calculateScore = this.calculateScore.bind(this);
     this.reDeal = this.reDeal.bind(this);
   }
@@ -52,6 +50,7 @@ class App extends Component {
     let { humanCards, cards, dealerCards, dealerScore, humanScore } = this.state;
     humanCards.push(cards.splice(Math.floor(Math.random() * cards.length), 1)[0]);
 
+    // The player always takes their turn before the dealer
     // The dealer must hit if his cards total less than 17 and stand otherwise
     if (dealerScore < 17) {
       dealerCards.push(cards.splice(Math.floor(Math.random() * cards.length), 1)[0]);
@@ -77,6 +76,7 @@ class App extends Component {
     // The player always takes their turn before the dealer
     let { humanCards, dealerCards, cards, dealerScore } = this.state;
 
+    // The player always takes their turn before the dealer
     // The dealer must hit if his cards total less than 17 and stand otherwise
     if (dealerScore < 17) {
       dealerCards.push(cards.splice(Math.floor(Math.random() * cards.length), 1)[0]);
@@ -133,7 +133,10 @@ class App extends Component {
   }
 
   reDeal() {
+    // The deck should be shuffled before each game
     let numbers = [];
+
+    // Only one deck will be used per game
     for (let i = 0; i < 52; i++) {
       numbers.push(i);
     }
@@ -164,7 +167,7 @@ class App extends Component {
       DealerCards = this.state.dealerCards.map((card, index) => {
         return (
           <div className="col-sm-1 col-md-1 col-lg-1" key={index}>
-            <h2>{card.toString()}</h2>
+            <img src="./images/52.png" height="200px"></img>
           </div>
         )
       });
@@ -172,9 +175,10 @@ class App extends Component {
     let HumanCards;
     if (this.state.humanCards.length) {
       HumanCards = this.state.humanCards.map((card, index) => {
+        let imgSrc = `./images/${card}.png`;
         return (
           <div className="col-sm-1 col-md-1 col-lg-1" key={index}>
-            <h2>{card.toString()}</h2>
+            <img src={imgSrc} height="200px"></img>
           </div>
         )
       });
@@ -218,7 +222,7 @@ class App extends Component {
             <h5 className="col-sm-8 col-md-10 col-lg-11">{status}</h5>
           </div>
           <div className="col-sm-4 col-md-2 col-lg-1">
-            <img className="col-sm-4 col-md-2 col-lg-1" src="#" style={styles.card}/>
+            <img src="./images/52.png" height="200px"/>
           </div>
         </div>
         <hr/>
