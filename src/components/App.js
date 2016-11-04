@@ -49,7 +49,7 @@ class App extends Component {
 
   hit() {
     // The player always takes their turn before the dealer
-    let { humanCards, cards, dealerCards, dealerScore } = this.state;
+    let { humanCards, cards, dealerCards, dealerScore, humanScore } = this.state;
     humanCards.push(cards.splice(Math.floor(Math.random() * cards.length), 1)[0]);
 
     // The dealer must hit if his cards total less than 17 and stand otherwise
@@ -66,6 +66,11 @@ class App extends Component {
       humanScore: this.calculateScore(humanCards),
       dealerScore: this.calculateScore(dealerCards)
     });
+    if (humanScore > 21 || dealerScore > 21) {
+      this.setState({
+        end: true
+      });
+    }
   }
 
   stay() {
@@ -118,7 +123,10 @@ class App extends Component {
         score += 2;
       }
       else {
-        score += 1;
+        if (score >= 21) {
+          score += 1;
+        }
+        score += 11;
       }
     });
     return score;
@@ -172,8 +180,8 @@ class App extends Component {
       });
     }
 
-    let DealerScore;
-    let HumanScore;
+    let finalDealerScore;
+    let finalHumanScore;
     let status;
     if (end) {
       // If either player has 21 with their first two cards, they win (unless they both have 21 on their first two cards, in which case it is a tie)
@@ -195,13 +203,8 @@ class App extends Component {
         status = 'Dealer Wins!';
       }
 
-      DealerScore = <h3>{dealerScore}</h3>;
-      HumanScore = <h3>{humanScore}</h3>;
-
-    } else {
-
-      DealerScore = <div></div>;
-      HumanScore = <div></div>;
+      finalDealerScore = dealerScore;
+      finalHumanScore = humanScore;
     }
 
     return (
@@ -224,7 +227,7 @@ class App extends Component {
             <h3>Dealer</h3>
           </div>
           <div className="col-sm-3 col-md-3 col-lg-3">
-            {DealerScore}
+            <h3>{finalDealerScore}</h3>
           </div>
         </div>
         <div className="row">
@@ -241,7 +244,9 @@ class App extends Component {
           <div className="col-sm-3 col-md-3 col-lg-3">
             <button className="btn btn-alert" onClick={this.stay} disabled={end}>Stay</button>
           </div>
-          {HumanScore}
+          <div className="col-sm-3 col-md-3 col-lg-3">
+            <h3>{finalHumanScore}</h3>
+          </div>
         </div>
         <div className="row">
           {HumanCards}
