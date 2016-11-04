@@ -172,15 +172,28 @@ class App extends Component {
     let { humanScore, dealerScore, end } = this.state;
 
     let DealerCards;
-    if (this.state.dealerCards.length) {
+    if (this.state.end) {
       DealerCards = this.state.dealerCards.map((card, index) => {
+        let imgSrc = `./images/${card}.png`;
         return (
           <div className="col-sm-1 col-md-1 col-lg-1" key={index}>
-            <img src="./images/52.png" style={styles.card}></img>
+            <img src={imgSrc} style={styles.card}></img>
           </div>
         )
       });
+    } else {
+      DealerCards = (
+        <div>
+          <div className="col-sm-1 col-md-1 col-lg-1">
+            <img src="./images/52.png" style={styles.card}></img>
+          </div>
+          <div className="col-sm-1 col-md-1 col-lg-1">
+            <img src="./images/52.png" style={styles.card}></img>
+          </div>
+        </div>
+      )
     }
+
     let HumanCards;
     if (this.state.humanCards.length) {
       HumanCards = this.state.humanCards.map((card, index) => {

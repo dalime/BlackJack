@@ -15,10 +15,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
+// BROWSERIFY BUNDLE
 app.use(express.static(__dirname + '/static'));
 app.use('/bundle', express.static(path.join(__dirname, 'bundle')));
-app.set('view engine', 'html');
 
+// VIEW ENGINE DECLARATION
+app.set('view engine', 'html');
 
 // SERVER LISTEN
 app.listen(PORT, err => {
