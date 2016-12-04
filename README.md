@@ -1,4 +1,4 @@
-# NCBJ AppBuild
+# BlackJack
 
 An electronic version of Blackjack. You vs. the dealer. Think you can win?
 
