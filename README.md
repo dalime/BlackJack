@@ -31,6 +31,9 @@ View in browser.
 http://localhost:8000
 ```
 
+## Deployed on
+
+[BlackJack on Heroku](https://dlblackjack.herokuapp.com/)
 
 ## Built With
 
